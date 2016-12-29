@@ -1,10 +1,12 @@
-# h5p-textilities
-Some functions that can be useful when dealing with texts in H5P.
-
-
 H5P Text Utilities
-================
+==================
 Some functions that can be useful when dealing with texts in H5P.
+
+Planned for fuzzy string comparison, e. g. in h5p-blanks
+- Calculate Levenshtein distance
+- Calculate Damerau-Levenshtein distance
+- Calculate some n-gram based distance
+
 
 ## License
 
