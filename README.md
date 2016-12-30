@@ -3,9 +3,9 @@ H5P Text Utilities
 Some functions that can be useful when dealing with texts in H5P.
 
 Planned for fuzzy string comparison, e. g. in h5p-blanks
-- Calculate Levenshtein distance
-- Calculate Damerau-Levenshtein distance
-- Calculate some n-gram based distance
+- Calculate Levenshtein distance (https://en.wikipedia.org/wiki/Levenshtein_distance)
+- Calculate Damerau-Levenshtein distance (https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
+- Calculate Jaro-Winkler distance (https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) for those who prefer something like a percentage of similarity
 
 
 ## License
