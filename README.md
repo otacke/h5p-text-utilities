@@ -2,11 +2,11 @@ H5P Text Utilities
 ==================
 Some functions that can be useful when dealing with texts in H5P.
 
-Planned for fuzzy string comparison, e. g. in h5p-blanks
-- Calculate Levenshtein distance (https://en.wikipedia.org/wiki/Levenshtein_distance)
-- Calculate Damerau-Levenshtein distance (https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
-- Calculate Jaro-Winkler distance (https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) for those who prefer something like a percentage of similarity
+## Features
 
+### distance measures for strings
+- Compute the [(Damerau-)Levenshtein distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) ~= number of operations to transform onw string into the other 
+- Compute the [Jaro(-Winkler distance)](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) ~= percentage of similarity
 
 ## License
 
