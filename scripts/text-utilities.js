@@ -87,5 +87,123 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     return distance[str1.length][str2.length];
   }
 
+  /**
+   * Compute the Jaro(-Winkler) distance for two strings.
+   *
+   * // https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+   *
+   * TODO: http://disi.unitn.it/~p2p/RelatedWork/Matching/Hermans_bnaic-2012.pdf
+   *
+   * @public
+   * @param {string} str1 - string no. 1.
+   * @param {string} str2 - string no. 2.
+   * @param {boolean} winkler - if true, Jaro-Winkler distance will be computed
+   * @param {boolean} longTolerance - if true, Winkler's tolerance for long words will be used
+   * @return {number} distance.
+   */
+  TextUtilities.computeJaroDistance = function(str1, str2, winkler, longTolerance) {
+    // sanity checks
+    if (typeof str1 !== 'string' || typeof str2 !== 'string') {
+      return undefined;
+    }
+    if (winkler && typeof winkler !== 'boolean') {
+      return undefined;
+    }
+    if (longTolerance && typeof longTolerance !== 'boolean') {
+      return undefined;
+    }
+
+    // degenerate cases
+    if (str1.length === 0 || str2.length === 0) {
+      return 0;
+    }
+    if (str1 === str2) {
+      return 1;
+    }
+
+    // counter variables
+    var i, j, k;
+
+    // number of matches between both strings
+    var matches = 0;
+
+    // number of transpositions between both strings
+    var transpositions = 0;
+
+    // The Jaro-Winkler distance
+    var distance = 0;
+
+    // length of common prefix up to 4 chars
+    var l = 0;
+
+    // scaling factor, should not exceed 0.25 (Winkler default = 0.1)
+    var p = 0.1;
+
+    // will be used often
+    var str1Len = str1.length;
+    var str2Len = str2.length;
+
+    // determines the distance that still counts as a match
+    var matchWindow = Math.floor(Math.max(str1Len, str2Len) / 2)- 1;
+
+    // will store matches
+    var str1Flags = new Array(str1Len);
+    var str2Flags = new Array(str2Len);
+
+    // count matches
+    for (i = 0; i < str1Len; i++) {
+      var start  = (i >= matchWindow) ? i - matchWindow : 0;
+      var end = (i + matchWindow <= (str2Len - 1)) ? (i + matchWindow) : (str2Len - 1);
+
+      for (j = start; j <= end; j++) {
+        if (str1Flags[i] !== true && str2Flags[j] !== true && str1[i] === str2[j]) {
+          str1Flags[i] = str2Flags[j] = true;
+          matches += 1;
+          break;
+        }
+      }
+    }
+    if (matches === 0) {
+      return 0;
+    }
+
+    // count transpositions
+    k = 0;
+    for (i = 0; i < str1Len; i++) {
+      if (!str1Flags[i]) {
+        continue;
+      }
+      while (!str2Flags[k]) {
+        k += 1;
+      }
+      if (str1[i] !== str2[k]) {
+        transpositions += 1;
+      }
+      k += 1;
+    }
+    transpositions = transpositions / 2;
+
+    distance = (matches/str1Len + matches/str2Len + (matches - transpositions) / matches) / 3;
+
+    // modification used by Winkler
+    if (winkler) {
+      if (distance > 0.7 && str1Len > 3 && str2Len > 3) {
+        while (str1[l] === str2[l] && l < 4) {
+          l += 1;
+        }
+        distance = distance + l * p * (1 - distance);
+
+        // modification for long words
+        if (longTolerance) {
+          if (Math.max(str1Len, str2Len) > 4 && matches > l + 1 && 2 * matches >= Math.max(str1Len, str2Len) + l) {
+            distance += ((1.0 - distance) * ((matches - l - 1) / (str1Len + str2Len - 2 * l + 2)));
+          }
+        }
+      }
+    }
+
+    return distance;
+  }
+
   return TextUtilities;
 }(H5P.jQuery, H5P.EventDispatcher);
