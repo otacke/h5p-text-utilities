@@ -25,12 +25,22 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
    *
-   * // http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
+   * The (Damerau-)Levenshtein distance that is returned is equivalent to the
+   * number of operations that are necessary to transform one string into the
+   * other. Consequently, lower numbers indicate higher similarity between the
+   * two strings.
+   *
+   * While the Levenshtein distance counts deletions, insertions and mismatches,
+   * the Damerau-Levenshtein distance also counts swapping two characters as
+   * only one operation (instead of two mismatches), because this seems to
+   * happen quite often.
+   *
+   * See http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance for details
    *
    * @public
    * @param {string} str1 - string no. 1.
    * @param {string} str2 - string no. 2.
-   * @param {boolean} damerau - if true, Damerau-Levenshtein distance will be computed
+   * @param {boolean} [damerau=false] - if true, Damerau-Levenshtein distance will be computed.
    * @return {number} distance.
    */
   TextUtilities.computeLevenshteinDistance = function(str1, str2, damerau) {
@@ -39,7 +49,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       return undefined;
     }
     if (damerau && typeof damerau !== 'boolean') {
-      return undefined;
+      damerau = false;
     }
 
     // degenerate cases
@@ -53,11 +63,14 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       return str1.length;
     }
 
-    // variables
-    var ds = [];
-    var distance = [];
+    // counter variables
     var i, j;
+
+    // indicates characters that don't match
     var cost;
+
+    // matrix for storing distances
+    var distance = [];
 
     // initialization
     for (i = 0; i <= str1.length; i++) {
@@ -90,15 +103,21 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   /**
    * Compute the Jaro(-Winkler) distance for two strings.
    *
-   * // https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+   * The Jaro(-Winkler) distance will return a value between 0 and 1 indicating
+   * the similarity of two strings. The higher the value, the more similar the
+   * strings are.
    *
-   * TODO: http://disi.unitn.it/~p2p/RelatedWork/Matching/Hermans_bnaic-2012.pdf
+   * See https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance for details
+   *
+   * It seems that a more generalized implementation of Winkler's modification
+   * can improve the results. This might be implemented later.
+   * http://disi.unitn.it/~p2p/RelatedWork/Matching/Hermans_bnaic-2012.pdf
    *
    * @public
    * @param {string} str1 - string no. 1.
    * @param {string} str2 - string no. 2.
-   * @param {boolean} winkler - if true, Jaro-Winkler distance will be computed
-   * @param {boolean} longTolerance - if true, Winkler's tolerance for long words will be used
+   * @param {boolean} [winkler=false] - if true, Jaro-Winkler distance will be computed.
+   * @param {boolean} [longTolerance=false] - if true, Winkler's tolerance for long words will be used.
    * @return {number} distance.
    */
   TextUtilities.computeJaroDistance = function(str1, str2, winkler, longTolerance) {
@@ -107,10 +126,10 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       return undefined;
     }
     if (winkler && typeof winkler !== 'boolean') {
-      return undefined;
+      winkler = false;
     }
     if (longTolerance && typeof longTolerance !== 'boolean') {
-      return undefined;
+      longTolerance = false;
     }
 
     // degenerate cases
@@ -183,6 +202,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
     transpositions = transpositions / 2;
 
+    // compute Jaro distance
     distance = (matches/str1Len + matches/str2Len + (matches - transpositions) / matches) / 3;
 
     // modification used by Winkler
