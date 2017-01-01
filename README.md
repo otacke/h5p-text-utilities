@@ -6,7 +6,7 @@ Some functions that can be useful when dealing with texts in H5P.
 
 ### distance measures for strings
 - Compute the [(Damerau-)Levenshtein distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) ~= number of operations to transform onw string into the other 
-- Compute the [Jaro(-Winkler distance)](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) ~= percentage of similarity
+- Compute the [Jaro(-Winkler) distance](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) ~= percentage of similarity
 
 ## License
 
