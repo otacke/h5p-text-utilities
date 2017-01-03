@@ -40,10 +40,10 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    * @public
    * @param {string} str1 - string no. 1.
    * @param {string} str2 - string no. 2.
-   * @param {boolean} [damerau=false] - if true, Damerau-Levenshtein distance will be computed.
+   * @param {boolean} [countSwapping=false] - if true, swapping chars will count as operation.
    * @return {number} distance.
    */
-  TextUtilities.computeLevenshteinDistance = function(str1, str2, damerau) {
+  TextUtilities.computeLevenshteinDistance = function(str1, str2, countSwapping) {
     // sanity checks
     if (typeof str1 !== 'string' || typeof str2 !== 'string') {
       return undefined;
@@ -90,7 +90,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
           distance[i-1][j-1] + cost // mismatch
         );
         // in Damerau-Levenshtein distance, transpositions are operations
-        if (damerau) {
+        if (countSwapping) {
           if (i > 1 && j > 1 && str1[i-1] === str2[j-2] && str1[i-2] === str2[j-1]) {
             distance[i][j] = Math.min(distance[i][j], distance[i-2][j-2] + cost);
           }
@@ -116,11 +116,11 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    * @public
    * @param {string} str1 - string no. 1.
    * @param {string} str2 - string no. 2.
-   * @param {boolean} [winkler=false] - if true, Jaro-Winkler distance will be computed.
+   * @param {boolean} [favorSameStart=false] - if true, strings with same start get higher distance value.
    * @param {boolean} [longTolerance=false] - if true, Winkler's tolerance for long words will be used.
    * @return {number} distance.
    */
-  TextUtilities.computeJaroDistance = function(str1, str2, winkler, longTolerance) {
+  TextUtilities.computeJaroDistance = function(str1, str2, favorSameStart, longTolerance) {
     // sanity checks
     if (typeof str1 !== 'string' || typeof str2 !== 'string') {
       return undefined;
@@ -206,7 +206,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     distance = (matches/str1Len + matches/str2Len + (matches - transpositions) / matches) / 3;
 
     // modification used by Winkler
-    if (winkler) {
+    if (favorSameStart) {
       if (distance > 0.7 && str1Len > 3 && str2Len > 3) {
         while (str1[l] === str2[l] && l < 4) {
           l += 1;
