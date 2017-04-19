@@ -48,8 +48,8 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     if (typeof str1 !== 'string' || typeof str2 !== 'string') {
       return undefined;
     }
-    if (damerau && typeof damerau !== 'boolean') {
-      damerau = false;
+    if (countSwapping && typeof countSwapping !== 'boolean') {
+      countSwapping = false;
     }
 
     // degenerate cases
@@ -125,8 +125,8 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     if (typeof str1 !== 'string' || typeof str2 !== 'string') {
       return undefined;
     }
-    if (winkler && typeof winkler !== 'boolean') {
-      winkler = false;
+    if (favorSameStart && typeof favorSameStart !== 'boolean') {
+      favorSameStart = false;
     }
     if (longTolerance && typeof longTolerance !== 'boolean') {
       longTolerance = false;
