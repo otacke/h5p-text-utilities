@@ -98,7 +98,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       }
     }
     return distance[str1.length][str2.length];
-  }
+  };
 
   /**
    * Compute the Jaro(-Winkler) distance for two strings.
@@ -223,7 +223,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     return distance;
-  }
+  };
 
   return TextUtilities;
 }(H5P.jQuery, H5P.EventDispatcher);
