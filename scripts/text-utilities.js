@@ -38,10 +38,10 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    * See http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance for details
    *
    * @public
-   * @param {string} str1 - string no. 1.
-   * @param {string} str2 - string no. 2.
-   * @param {boolean} [countSwapping=false] - if true, swapping chars will count as operation.
-   * @return {number} distance.
+   * @param {string} str1 - String no. 1.
+   * @param {string} str2 - String no. 2.
+   * @param {boolean} [countSwapping=false] - If true, swapping chars will count as operation.
+   * @returns {number} Distance.
    */
   TextUtilities.computeLevenshteinDistance = function(str1, str2, countSwapping) {
     // sanity checks
@@ -114,11 +114,11 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    * http://disi.unitn.it/~p2p/RelatedWork/Matching/Hermans_bnaic-2012.pdf
    *
    * @public
-   * @param {string} str1 - string no. 1.
-   * @param {string} str2 - string no. 2.
-   * @param {boolean} [favorSameStart=false] - if true, strings with same start get higher distance value.
-   * @param {boolean} [longTolerance=false] - if true, Winkler's tolerance for long words will be used.
-   * @return {number} distance.
+   * @param {string} str1 - String no. 1.
+   * @param {string} str2 - String no. 2.
+   * @param {boolean} [favorSameStart=false] - If true, strings with same start get higher distance value.
+   * @param {boolean} [longTolerance=false] - If true, Winkler's tolerance for long words will be used.
+   * @returns {number} Distance.
    */
   TextUtilities.computeJaroDistance = function(str1, str2, favorSameStart, longTolerance) {
     // sanity checks
