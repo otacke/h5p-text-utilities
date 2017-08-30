@@ -38,7 +38,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   TextUtilities.isIsolated = function (candidate, text, params) {
     // Sanitization
     if (candidate === undefined || text === undefined) {
-      return false;
+      return;
     }
     var delimiter = (params !== undefined && params.delimiter !== undefined) ? params.delimiter : TextUtilities.WORD_DELIMITER;
 
@@ -55,6 +55,42 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
     return true;
   };
+
+  /**
+   * Check whether two strings are considered to be similar.
+   * The similarity is temporarily computed by word length and number of number of operations
+   * required to change one word into the other (Damerau-Levenshtein). It's subject to
+   * change, cmp. https://github.com/otacke/udacity-machine-learning-engineer/blob/master/submissions/capstone_proposals/h5p_fuzzy_blanks.md
+   *
+   * @param {String} string1 - String #1.
+   * @param {String} string2 - String #2.
+   * @param {object} params - Parameters.
+   * @return {boolean} True, if strings are considered to be similar.
+   */
+  TextUtilities.areSimilar = function (string1, string2, params) {
+    // Sanitization
+    if (string1 === undefined || typeof string1 !== 'string') {
+      console.log('problem string 1');
+      return;
+    }
+    if (string2 === undefined || typeof string2 !== 'string') {
+      console.log('problem string 2');
+      return;
+    }
+
+    // Just temporariliy this unflexible. Will be configurable via params.
+    var length = Math.min(string1.length, string2.length);
+    var levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
+    if ((length > 9) && (levenshtein <= 2)) {
+      return true;
+    }
+    if ((length > 3) && (levenshtein <= 1)) {
+      return true;
+    }
+    return false;
+  };
+
+
 
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
