@@ -37,10 +37,11 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    */
   TextUtilities.isIsolated = function (candidate, text, params) {
     // Sanitization
-    if (candidate === undefined || text === undefined) {
+    if (!candidate || !text) {
       return;
     }
-    var delimiter = (params !== undefined && params.delimiter !== undefined) ? params.delimiter : TextUtilities.WORD_DELIMITER;
+
+    var delimiter = (!!params && !!params.delimiter) ? params.delimiter : TextUtilities.WORD_DELIMITER;
 
     var pos = text.indexOf(candidate);
     if (pos === -1) {
@@ -69,12 +70,10 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    */
   TextUtilities.areSimilar = function (string1, string2, params) {
     // Sanitization
-    if (string1 === undefined || typeof string1 !== 'string') {
-      console.log('problem string 1');
+    if (!string1 || typeof string1 !== 'string') {
       return;
     }
-    if (string2 === undefined || typeof string2 !== 'string') {
-      console.log('problem string 2');
+    if (!string2 || typeof string2 !== 'string') {
       return;
     }
 
