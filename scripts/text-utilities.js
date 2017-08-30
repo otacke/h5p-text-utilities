@@ -22,6 +22,40 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   TextUtilities.prototype = Object.create(H5P.EventDispatcher.prototype);
   TextUtilities.prototype.constructor = TextUtilities;
 
+  /** @constant {object} */
+  TextUtilities.WORD_DELIMITER = /[\s.?!,\';]/g;
+
+  /**
+   * Check if a candidate string is considered isolated in a (larger) string by
+   * checking the symbol before and after the candidate.
+   *
+   * @param {string} candidate - String to be looked for.
+   * @param {string} text - (Larger) string that should contain candidate.
+   * @param {object} params - Parameters.
+   * @param {object} params.delimiter - Regular expression containing symbols used to isolate the candidate.
+   * @return {boolean} True if string is isolated.
+   */
+  TextUtilities.isIsolated = function (candidate, text, params) {
+    // Sanitization
+    if (candidate === undefined || text === undefined) {
+      return false;
+    }
+    var delimiter = (params !== undefined && params.delimiter !== undefined) ? params.delimiter : TextUtilities.WORD_DELIMITER;
+
+    var pos = text.indexOf(candidate);
+    if (pos === -1) {
+      return false;
+    }
+
+    var pred = (pos === 0 ? '' : text[pos - 1].replace(delimiter, ''));
+    var succ = (pos + candidate.length === text.length ? '' : text[pos + candidate.length].replace(delimiter, ''));
+
+    if (pred !== '' || succ !== '') {
+      return false;
+    }
+    return true;
+  };
+
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
    *
