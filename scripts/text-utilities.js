@@ -80,6 +80,9 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     // Just temporariliy this unflexible. Will be configurable via params.
     var length = Math.min(string1.length, string2.length);
     var levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
+    if (levenshtein === 0) {
+      return true;
+    }    
     if ((length > 9) && (levenshtein <= 2)) {
       return true;
     }
