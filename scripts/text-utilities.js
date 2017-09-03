@@ -26,7 +26,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   TextUtilities.WORD_DELIMITER = /[\s.?!,\';]/g;
 
   /**
-   * Check if a candidate string is considered isolated in a (larger) string by
+   * Check if a candidate string is considered isolated (in a larger string) by
    * checking the symbol before and after the candidate.
    *
    * @param {string} candidate - String to be looked for.
@@ -82,7 +82,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     var levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
     if (levenshtein === 0) {
       return true;
-    }    
+    }
     if ((length > 9) && (levenshtein <= 2)) {
       return true;
     }
@@ -295,6 +295,49 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     return distance;
+  };
+
+
+  /**
+   * Check whether a text contains a string, but fuzzy.
+   *
+   * This function is naive. It moves a window of needle's length (+2)
+   * over the haystack's text and each move compares for similarity using
+   * a given string metric. This will be slow for long texts!!!
+   *
+   * TODO: You might want to look into the bitap algorithm or experiment
+   *       with regexps
+   *
+   * @param {String} needle - String to look for.
+   * @param {String} haystack - Text to look in.
+   * @param {object} params - Parameters.
+   */
+  TextUtilities.fuzzyContains = function (needle, haystack, params) {
+    // Sanitization
+    if (!needle || typeof needle !== 'string') {
+      return false;
+    }
+    if (!haystack || typeof haystack !== 'string') {
+      return false;
+    }
+
+    var found = false;
+    for (var i = 0; i < haystack.length - needle.length + 1; i++) {
+      var h0 = haystack.substr(i, needle.length);
+      var h1 = haystack.substr(i, needle.length + 1);
+      var h2 = haystack.substr(i, needle.length + 2);
+
+      // Checking isIsolated will e.g. prevent finding beginnings of words
+      if (
+        TextUtilities.isIsolated(h0, haystack) && TextUtilities.areSimilar(h0, needle) ||
+        TextUtilities.isIsolated(h1, haystack) && TextUtilities.areSimilar(h1, needle) ||
+        TextUtilities.isIsolated(h2, haystack) && TextUtilities.areSimilar(h2, needle)
+      ) {
+        found = true;
+        break;
+      }
+    }
+    return found;
   };
 
   return TextUtilities;
