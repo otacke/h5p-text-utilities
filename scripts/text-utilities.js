@@ -93,7 +93,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   };
 
 
-
+7
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
    *
