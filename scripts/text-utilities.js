@@ -1,3 +1,5 @@
+/* jslint esversion: 6 */
+
 var H5P = H5P || {};
 
 /**
@@ -92,8 +94,6 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     return false;
   };
 
-
-7
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
    *
