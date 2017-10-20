@@ -1,5 +1,3 @@
-/* jslint esversion: 6 */
-
 var H5P = H5P || {};
 
 /**
@@ -93,6 +91,8 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
     return false;
   };
+
+
 
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
@@ -338,76 +338,6 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       }
     }
     return found;
-  };
-
-  /**
-   * Try to align both arrays' string contents to one another.
-   * Will result in both arrays having the same length and 'undefined' in
-   * spots that seem to be missing in the other one.
-   *
-   * Example:
-   * text1 = ['I', 'am', 'just', 'a', 'poor', 'boy'];
-   * text2 = ['Yo', 'I', 'am', 'a', 'nice', 'little', 'boy'];
-   * will result in:
-   * [undefined, "I", "am", "just", "a", "poor", undefined, "boy"] and
-   * ["Yo", "I", "am", undefined, "a", "nice", "little", "boy"]
-   *
-   * @param {Array} text1 - Text 1.
-   * @param {Array} text2 - Text 2.
-   * @return {object} aligned arrays.
-   */
-  TextUtilities.alignArrays = function (text1, text2) {
-    // Sanitization
-    if (!text1 || !Array.isArray(text1)) {
-      return;
-    }
-    if (!text2 || !Array.isArray(text2)) {
-      return;
-    }
-
-    let output_text1 = [];
-    let output_text2 = [];
-    // Used to look ahead in the other array
-    let position1 = -1;
-    let position2 = -1;
-
-    do {
-      if (text1[0] !== text2[0]) {
-        position1 = text2.indexOf(text1[0]);
-        if (position1 !== -1) {
-          for (let i = 0; i < position1; i++) {
-            text1 = [undefined].concat(text1);
-          }
-        }
-        else {
-          position1 = text1.indexOf(text2[0]);
-          // Position 2 is needed for cases such as [1, 2] and [2, 2]
-          position2 = text2.indexOf(text2[0], 1);
-          if (position1 !== -1 && position2 === -1) {
-            for (let i = 0; i < position1; i++) {
-              text2 = [undefined].concat(text2);
-            }
-          }
-        }
-      }
-
-      output_text1.push(text1[0]);
-      output_text2.push(text2[0]);
-      text2 = text2.slice(1);
-      text1 = text1.slice(1);
-
-      if (text2.length === 0 && text1.length > 0) {
-        text2 = [undefined].concat(text2);
-      }
-      if (text1.length === 0 && text2.length > 0) {
-        text1 = [undefined].concat(text1);
-      }
-    } while (text1.length > 0 && text2.length > 0);
-
-    return {
-      'text1': output_text1,
-      'text2': output_text2
-    };
   };
 
   return TextUtilities;
