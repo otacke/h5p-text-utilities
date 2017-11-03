@@ -1,3 +1,5 @@
+/* jslint esversion: 6 */
+
 var H5P = H5P || {};
 
 /**
@@ -91,8 +93,6 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
     return false;
   };
-
-
 
   /**
    * Compute the (Damerau-)Levenshtein distance for two strings.
@@ -321,7 +321,13 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       return false;
     }
 
-    var found = false;
+    var found = haystack.split(' ').some(function(hay) {
+      return H5P.TextUtilities.areSimilar(needle, hay);
+    });
+    if (found) {
+      return true;
+    }
+
     for (var i = 0; i < haystack.length - needle.length + 1; i++) {
       var h0 = haystack.substr(i, needle.length);
       var h1 = haystack.substr(i, needle.length + 1);
