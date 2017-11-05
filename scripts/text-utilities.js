@@ -310,9 +310,37 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    *
    * @param {String} needle - String to look for.
    * @param {String} haystack - Text to look in.
+   */
+  TextUtilities.fuzzyContains = function (needle, haystack) {
+    return this.fuzzyFind(needle, haystack).contains;
+  };
+
+  /**
+   * Find the first position of a fuzzy string within a text
+   * @param {String} needle - String to look for.
+   * @param {String} haystack - Text to look in.
+   */
+  TextUtilities.fuzzyIndexOf = function (needle, haystack) {
+    return this.fuzzyFind(needle, haystack).indexOf;
+  };
+
+  /**
+   * Find the first fuzzy match of a string within a text
+   * @param {String} needle - String to look for.
+   * @param {String} haystack - Text to look in.
+   */
+  TextUtilities.fuzzyMatch = function (needle, haystack) {
+    return this.fuzzyFind(needle, haystack).match;
+  };
+
+  /**
+   * Find a fuzzy string with in a text.
+   * TODO: This could be cleaned ...
+   * @param {String} needle - String to look for.
+   * @param {String} haystack - Text to look in.
    * @param {object} params - Parameters.
    */
-  TextUtilities.fuzzyContains = function (needle, haystack, params) {
+  TextUtilities.fuzzyFind = function (needle, haystack, params) {
     // Sanitization
     if (!needle || typeof needle !== 'string') {
       return false;
@@ -324,12 +352,14 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       params = {'windowSize': 3};
     }
 
+    var match;
+
     var found = haystack.split(' ').some(function(hay) {
       match = hay;
       return H5P.TextUtilities.areSimilar(needle, hay);
     });
     if (found) {
-      return true;
+      return {'contains' : found, 'match': match, 'index': haystack.indexOf(match)};
     }
 
     // This is not used for single words but for phrases
@@ -342,6 +372,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       // Checking isIsolated will e.g. prevent finding beginnings of words
       for (j = 0; j < hay.length; j++) {
         if (TextUtilities.isIsolated(hay[j], haystack) && TextUtilities.areSimilar(hay[j], needle)) {
+          match = hay[j];
           found = true;
           break;
         }
@@ -350,7 +381,10 @@ H5P.TextUtilities = function ($, EventDispatcher) {
         break;
       }
     }
-    return found;
+    if (!found) {
+      match = undefined;
+    }
+    return {'contains' : found, 'match': match, 'index': haystack.indexOf(match)};
   };
 
   return TextUtilities;
