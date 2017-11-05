@@ -320,26 +320,33 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     if (!haystack || typeof haystack !== 'string') {
       return false;
     }
+    if (params === undefined || params.windowSize === undefined || typeof params.windowSize !== 'number') {
+      params = {'windowSize': 3};
+    }
 
     var found = haystack.split(' ').some(function(hay) {
+      match = hay;
       return H5P.TextUtilities.areSimilar(needle, hay);
     });
     if (found) {
       return true;
     }
 
+    // This is not used for single words but for phrases
     for (var i = 0; i < haystack.length - needle.length + 1; i++) {
-      var h0 = haystack.substr(i, needle.length);
-      var h1 = haystack.substr(i, needle.length + 1);
-      var h2 = haystack.substr(i, needle.length + 2);
+      var hay = [];
+      for (var j = 0; j < params.windowSize; j++) {
+        hay[j] = haystack.substr(i, needle.length + j);
+      }
 
       // Checking isIsolated will e.g. prevent finding beginnings of words
-      if (
-        TextUtilities.isIsolated(h0, haystack) && TextUtilities.areSimilar(h0, needle) ||
-        TextUtilities.isIsolated(h1, haystack) && TextUtilities.areSimilar(h1, needle) ||
-        TextUtilities.isIsolated(h2, haystack) && TextUtilities.areSimilar(h2, needle)
-      ) {
-        found = true;
+      for (j = 0; j < hay.length; j++) {
+        if (TextUtilities.isIsolated(hay[j], haystack) && TextUtilities.areSimilar(hay[j], needle)) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
         break;
       }
     }
