@@ -1,5 +1,3 @@
-/* jslint esversion: 6 */
-
 var H5P = H5P || {};
 
 /**
@@ -9,7 +7,8 @@ var H5P = H5P || {};
  *
  * @param {H5P.jQuery} $
  */
-H5P.TextUtilities = function ($, EventDispatcher) {
+H5P.TextUtilities = function () {
+  'use strict';
   /**
    * Create Text Utilities.
    *
@@ -17,7 +16,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    *
    * @constructor
    */
-  function TextUtilities() {
+  function TextUtilities () {
   }
 
   // Inheritance
@@ -25,7 +24,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   TextUtilities.prototype.constructor = TextUtilities;
 
   /** @constant {object} */
-  TextUtilities.WORD_DELIMITER = /[\s.?!,\';]/g;
+  TextUtilities.WORD_DELIMITER = /[\s.?!,\';\"]/g;
 
   /**
    * Check if a candidate string is considered isolated (in a larger string) by
@@ -42,16 +41,15 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     if (!candidate || !text) {
       return;
     }
+    let delimiter = (!!params && !!params.delimiter) ? params.delimiter : TextUtilities.WORD_DELIMITER;
 
-    var delimiter = (!!params && !!params.delimiter) ? params.delimiter : TextUtilities.WORD_DELIMITER;
-
-    var pos = text.indexOf(candidate);
-    if (pos === -1) {
+    let pos = (!!params && !!params.index && typeof params.index === 'number') ? params.index : text.indexOf(candidate);
+    if (pos < 0 || pos > text.length-1) {
       return false;
     }
 
-    var pred = (pos === 0 ? '' : text[pos - 1].replace(delimiter, ''));
-    var succ = (pos + candidate.length === text.length ? '' : text[pos + candidate.length].replace(delimiter, ''));
+    let pred = (pos === 0 ? '' : text[pos - 1].replace(delimiter, ''));
+    let succ = (pos + candidate.length === text.length ? '' : text[pos + candidate.length].replace(delimiter, ''));
 
     if (pred !== '' || succ !== '') {
       return false;
@@ -70,7 +68,7 @@ H5P.TextUtilities = function ($, EventDispatcher) {
    * @param {object} params - Parameters.
    * @return {boolean} True, if strings are considered to be similar.
    */
-  TextUtilities.areSimilar = function (string1, string2, params) {
+  TextUtilities.areSimilar = function (string1, string2) {
     // Sanitization
     if (!string1 || typeof string1 !== 'string') {
       return;
@@ -80,8 +78,8 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     // Just temporariliy this unflexible. Will be configurable via params.
-    var length = Math.min(string1.length, string2.length);
-    var levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
+    let length = Math.min(string1.length, string2.length);
+    let levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
     if (levenshtein === 0) {
       return true;
     }
@@ -136,13 +134,13 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     // counter variables
-    var i, j;
+    let i, j;
 
     // indicates characters that don't match
-    var cost;
+    let cost;
 
     // matrix for storing distances
-    var distance = [];
+    let distance = [];
 
     // initialization
     for (i = 0; i <= str1.length; i++) {
@@ -213,38 +211,38 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     // counter variables
-    var i, j, k;
+    let i, j, k;
 
     // number of matches between both strings
-    var matches = 0;
+    let matches = 0;
 
     // number of transpositions between both strings
-    var transpositions = 0;
+    let transpositions = 0;
 
     // The Jaro-Winkler distance
-    var distance = 0;
+    let distance = 0;
 
     // length of common prefix up to 4 chars
-    var l = 0;
+    let l = 0;
 
     // scaling factor, should not exceed 0.25 (Winkler default = 0.1)
-    var p = 0.1;
+    let p = 0.1;
 
     // will be used often
-    var str1Len = str1.length;
-    var str2Len = str2.length;
+    let str1Len = str1.length;
+    let str2Len = str2.length;
 
     // determines the distance that still counts as a match
-    var matchWindow = Math.floor(Math.max(str1Len, str2Len) / 2)- 1;
+    let matchWindow = Math.floor(Math.max(str1Len, str2Len) / 2)- 1;
 
     // will store matches
-    var str1Flags = new Array(str1Len);
-    var str2Flags = new Array(str2Len);
+    let str1Flags = new Array(str1Len);
+    let str2Flags = new Array(str2Len);
 
     // count matches
     for (i = 0; i < str1Len; i++) {
-      var start  = (i >= matchWindow) ? i - matchWindow : 0;
-      var end = (i + matchWindow <= (str2Len - 1)) ? (i + matchWindow) : (str2Len - 1);
+      let start  = (i >= matchWindow) ? i - matchWindow : 0;
+      let end = (i + matchWindow <= (str2Len - 1)) ? (i + matchWindow) : (str2Len - 1);
 
       for (j = start; j <= end; j++) {
         if (str1Flags[i] !== true && str2Flags[j] !== true && str1[i] === str2[j]) {
@@ -352,9 +350,9 @@ H5P.TextUtilities = function ($, EventDispatcher) {
       params = {'windowSize': 3};
     }
 
-    var match;
+    let match;
 
-    var found = haystack.split(' ').some(function(hay) {
+    let found = haystack.split(' ').some(function(hay) {
       match = hay;
       return H5P.TextUtilities.areSimilar(needle, hay);
     });
@@ -363,14 +361,14 @@ H5P.TextUtilities = function ($, EventDispatcher) {
     }
 
     // This is not used for single words but for phrases
-    for (var i = 0; i < haystack.length - needle.length + 1; i++) {
-      var hay = [];
-      for (var j = 0; j < params.windowSize; j++) {
+    for (let i = 0; i < haystack.length - needle.length + 1; i++) {
+      let hay = [];
+      for (let j = 0; j < params.windowSize; j++) {
         hay[j] = haystack.substr(i, needle.length + j);
       }
 
       // Checking isIsolated will e.g. prevent finding beginnings of words
-      for (j = 0; j < hay.length; j++) {
+      for (let j = 0; j < hay.length; j++) {
         if (TextUtilities.isIsolated(hay[j], haystack) && TextUtilities.areSimilar(hay[j], needle)) {
           match = hay[j];
           found = true;
@@ -388,4 +386,4 @@ H5P.TextUtilities = function ($, EventDispatcher) {
   };
 
   return TextUtilities;
-}(H5P.jQuery, H5P.EventDispatcher);
+}();
