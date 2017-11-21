@@ -41,15 +41,15 @@ H5P.TextUtilities = function () {
     if (!candidate || !text) {
       return;
     }
-    let delimiter = (!!params && !!params.delimiter) ? params.delimiter : TextUtilities.WORD_DELIMITER;
+    var delimiter = (!!params && !!params.delimiter) ? params.delimiter : TextUtilities.WORD_DELIMITER;
 
-    let pos = (!!params && !!params.index && typeof params.index === 'number') ? params.index : text.indexOf(candidate);
+    var pos = (!!params && !!params.index && typeof params.index === 'number') ? params.index : text.indexOf(candidate);
     if (pos < 0 || pos > text.length-1) {
       return false;
     }
 
-    let pred = (pos === 0 ? '' : text[pos - 1].replace(delimiter, ''));
-    let succ = (pos + candidate.length === text.length ? '' : text[pos + candidate.length].replace(delimiter, ''));
+    var pred = (pos === 0 ? '' : text[pos - 1].replace(delimiter, ''));
+    var succ = (pos + candidate.length === text.length ? '' : text[pos + candidate.length].replace(delimiter, ''));
 
     if (pred !== '' || succ !== '') {
       return false;
@@ -78,8 +78,8 @@ H5P.TextUtilities = function () {
     }
 
     // Just temporariliy this unflexible. Will be configurable via params.
-    let length = Math.min(string1.length, string2.length);
-    let levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
+    var length = Math.min(string1.length, string2.length);
+    var levenshtein = H5P.TextUtilities.computeLevenshteinDistance(string1, string2, true);
     if (levenshtein === 0) {
       return true;
     }
@@ -134,13 +134,13 @@ H5P.TextUtilities = function () {
     }
 
     // counter variables
-    let i, j;
+    var i, j;
 
     // indicates characters that don't match
-    let cost;
+    var cost;
 
     // matrix for storing distances
-    let distance = [];
+    var distance = [];
 
     // initialization
     for (i = 0; i <= str1.length; i++) {
@@ -211,38 +211,38 @@ H5P.TextUtilities = function () {
     }
 
     // counter variables
-    let i, j, k;
+    var i, j, k;
 
     // number of matches between both strings
-    let matches = 0;
+    var matches = 0;
 
     // number of transpositions between both strings
-    let transpositions = 0;
+    var transpositions = 0;
 
     // The Jaro-Winkler distance
-    let distance = 0;
+    var distance = 0;
 
     // length of common prefix up to 4 chars
-    let l = 0;
+    var l = 0;
 
     // scaling factor, should not exceed 0.25 (Winkler default = 0.1)
-    let p = 0.1;
+    var p = 0.1;
 
     // will be used often
-    let str1Len = str1.length;
-    let str2Len = str2.length;
+    var str1Len = str1.length;
+    var str2Len = str2.length;
 
     // determines the distance that still counts as a match
-    let matchWindow = Math.floor(Math.max(str1Len, str2Len) / 2)- 1;
+    var matchWindow = Math.floor(Math.max(str1Len, str2Len) / 2)- 1;
 
     // will store matches
-    let str1Flags = new Array(str1Len);
-    let str2Flags = new Array(str2Len);
+    var str1Flags = new Array(str1Len);
+    var str2Flags = new Array(str2Len);
 
     // count matches
     for (i = 0; i < str1Len; i++) {
-      let start  = (i >= matchWindow) ? i - matchWindow : 0;
-      let end = (i + matchWindow <= (str2Len - 1)) ? (i + matchWindow) : (str2Len - 1);
+      var start  = (i >= matchWindow) ? i - matchWindow : 0;
+      var end = (i + matchWindow <= (str2Len - 1)) ? (i + matchWindow) : (str2Len - 1);
 
       for (j = start; j <= end; j++) {
         if (str1Flags[i] !== true && str2Flags[j] !== true && str1[i] === str2[j]) {
@@ -350,9 +350,9 @@ H5P.TextUtilities = function () {
       params = {'windowSize': 3};
     }
 
-    let match;
+    var match;
 
-    let found = haystack.split(' ').some(function(hay) {
+    var found = haystack.split(' ').some(function(hay) {
       match = hay;
       return H5P.TextUtilities.areSimilar(needle, hay);
     });
@@ -361,14 +361,14 @@ H5P.TextUtilities = function () {
     }
 
     // This is not used for single words but for phrases
-    for (let i = 0; i < haystack.length - needle.length + 1; i++) {
-      let hay = [];
-      for (let j = 0; j < params.windowSize; j++) {
+    for (var i = 0; i < haystack.length - needle.length + 1; i++) {
+      var hay = [];
+      for (var j = 0; j < params.windowSize; j++) {
         hay[j] = haystack.substr(i, needle.length + j);
       }
 
       // Checking isIsolated will e.g. prevent finding beginnings of words
-      for (let j = 0; j < hay.length; j++) {
+      for (var j = 0; j < hay.length; j++) {
         if (TextUtilities.isIsolated(hay[j], haystack) && TextUtilities.areSimilar(hay[j], needle)) {
           match = hay[j];
           found = true;
